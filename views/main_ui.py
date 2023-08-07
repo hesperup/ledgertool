@@ -162,6 +162,9 @@ class Ui_MainWindow(object):
             "MainWindow", u"\u4eea\u5668\u7f16\u53f7", None))
         self.produpage.label_12.setText(QCoreApplication.translate(
             "MainWindow", u"\u4eea\u5668\u540d\u79f0", None))
+        self.produpage.label_13.setText(QCoreApplication.translate(
+            "MainWindow", u"\u5382\u5bb6\u7f16\u53f7", None))
+
         self.produpage.pushButton_3.setText(QCoreApplication.translate(
             "MainWindow", u"\u65b0\u589e", None))
     # retranslateUi

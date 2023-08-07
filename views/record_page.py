@@ -13,7 +13,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
                            QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QDateEdit, QDateTimeEdit,
                                QHeaderView, QLabel, QLineEdit, QListView, QMessageBox,
-                               QMainWindow, QMenu, QMenuBar, QPushButton,
+                               QMainWindow, QMenu, QMenuBar, QPushButton, QAbstractItemView,
                                QSizePolicy, QStackedWidget, QStatusBar, QTableView,
                                QWidget)
 
@@ -80,6 +80,16 @@ class RecordPage(QWidget):
         self.tableView = QTableView(self)
         self.tableView.setObjectName(u"tableView")
         self.tableView.setGeometry(QRect(20, 130, 861, 461))
+        # tableView 允许右键菜单
+        self.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableView.setContextMenuPolicy(Qt.ActionsContextMenu)
+
+        # 具体菜单项
+        del_option = QAction(self.tableView)
+        del_option.setText("删除记录")
+        del_option.triggered.connect(self.del_pojo)
+        # tableView 添加具体的右键菜单
+        self.tableView.addAction(del_option)
         # record_list = self.record_model.getRecords()
         # self.tableView.setModel(record_list)
 
@@ -88,6 +98,16 @@ class RecordPage(QWidget):
         self.tableView.setModel(record_list)
         self.init_user()
         self.init_product()
+
+    def del_pojo(self):
+        # index = self.listView_2.currentIndex()
+        data = self.tableView.selectionModel().selectedIndexes()
+        id_index = data[0]
+        id = id_index.data()
+        # 删除数据
+        self.record_model.del_pojo(id)
+        # 刷新数据
+        self.init_data()
 
     def export_excel(self):
         self.queryRecordsByParam()
@@ -106,21 +126,27 @@ class RecordPage(QWidget):
         ws.column_dimensions['A'].width = 22
         ws.column_dimensions['C'].width = 25
         ws.column_dimensions['D'].width = 14
-        ws.column_dimensions['E'].width = 12
+        ws.column_dimensions['E'].width = 14
         ws.column_dimensions['F'].width = 12
-
+        ws.column_dimensions['G'].width = 12
         ts = calendar.timegm(time.gmtime())
 
         filename = str(ts)+".xlsx"
         fullPath = os.path.join(os.path.expanduser('~'),
                                 filename)  # 得到完整的filepath
         wb.save(fullPath)
-
-        et = client.DispatchEx("Excel.Application")
-        # 0或者False都可以
-        et.Visible = 1  # 不显示
-        et.DisplayAlerts = 0  # 不警告
-        wbc = et.Workbooks.Open(fullPath)
+        try:
+            et = client.DispatchEx("ket.Application")
+        except Exception as e:
+            QMessageBox.information(self, "excel打开失败",
+                                    f'{e},文件在{fullPath}')
+        else:
+            # 0或者False都可以
+            et.Visible = 1  # 显示
+            et.DisplayAlerts = 0  # 不警告
+            wbc = et.Workbooks.Open(fullPath)
+        finally:
+            self.exportExcel.setEnabled(True)
 
     def queryRecordsByParam(self):
         query_date = self.dateEdit.text()

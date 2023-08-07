@@ -14,6 +14,8 @@ QUERY_USER_BY_NAME_SQL = """
 
 QUERY_USERLIST_SQL = "SELECT name  FROM user "
 
+DEL_BY_ID_SQL = "delete FROM user where id = :id"
+
 
 class UserModel:
     def getUsers(self) -> QSqlQueryModel:
@@ -40,6 +42,12 @@ class UserModel:
         q.exec()
         if q.next():
             return q.value(0)
+
+    def del_pojo(self, id):
+        q = QSqlQuery(DBUtil.db)
+        q.prepare(DEL_BY_ID_SQL)
+        q.bindValue(":id", id)
+        q.exec()
 
     def queryUserList(self):
         user_list = ['']

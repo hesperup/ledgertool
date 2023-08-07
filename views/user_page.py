@@ -8,7 +8,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
                            QPainter, QPalette, QPixmap, QRadialGradient,
                            QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QDateEdit, QDateTimeEdit, QMessageBox,
-                               QHeaderView, QLabel, QLineEdit, QListView,
+                               QHeaderView, QLabel, QLineEdit, QListView, QAbstractItemView,
                                QMainWindow, QMenu, QMenuBar, QPushButton,
                                QSizePolicy, QStackedWidget, QStatusBar, QTableView,
                                QWidget)
@@ -36,6 +36,17 @@ class UserPage(QWidget):
         self.listView = QTableView(self)
         self.listView.setObjectName(u"listView")
         self.listView.setGeometry(QRect(90, 80, 281, 411))
+        # tableView 允许右键菜单
+        self.listView.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.listView.setContextMenuPolicy(Qt.ActionsContextMenu)
+
+        # 具体菜单项
+        del_option = QAction(self.listView)
+        del_option.setText("删除人员")
+        del_option.triggered.connect(self.del_pojo)
+
+        # tableView 添加具体的右键菜单
+        self.listView.addAction(del_option)
 
         self.label_8 = QLabel(self)
         self.label_8.setObjectName(u"label_8")
@@ -43,6 +54,16 @@ class UserPage(QWidget):
 
     def init_data(self):
         self.listView.setModel(self.user_model.getUsers())
+
+    def del_pojo(self):
+        # index = self.listView_2.currentIndex()
+        data = self.listView.selectionModel().selectedIndexes()
+        id_index = data[0]
+        id = id_index.data()
+        # 删除数据
+        self.user_model.del_pojo(id)
+        # 刷新数据
+        self.init_data()
 
     def addUser(self):
         self.pushButton_2.setEnabled(False)
