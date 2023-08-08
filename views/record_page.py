@@ -1,7 +1,6 @@
 import calendar
-import datetime
 import os
-import string
+import platform
 import time
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
                             QMetaObject, QObject, QPoint, QRect,
@@ -21,7 +20,7 @@ from model.record_model import RecordModel
 from model.user_model import UserModel
 from model.product_model import ProductModel
 from openpyxl import Workbook
-from win32com import client
+# from win32com import client
 
 
 class RecordPage(QWidget):
@@ -135,17 +134,25 @@ class RecordPage(QWidget):
         fullPath = os.path.join(os.path.expanduser('~'),
                                 filename)  # 得到完整的filepath
         wb.save(fullPath)
-        try:
-            et = client.DispatchEx("ket.Application")
-        except Exception as e:
-            QMessageBox.information(self, "excel打开失败",
-                                    f'{e},文件在{fullPath}')
+        sys = platform.system()
+        print(sys)
+        if sys == "Windows":
+            from win32com import client
+            try:
+                et = client.DispatchEx("ket.Application")
+            except Exception as e:
+                QMessageBox.information(self, "excel打开失败",
+                                        f'{e},文件在{fullPath}')
+            else:
+                # 0或者False都可以
+                et.Visible = 1  # 显示
+                et.DisplayAlerts = 0  # 不警告
+                wbc = et.Workbooks.Open(fullPath)
+            finally:
+                self.exportExcel.setEnabled(True)
         else:
-            # 0或者False都可以
-            et.Visible = 1  # 显示
-            et.DisplayAlerts = 0  # 不警告
-            wbc = et.Workbooks.Open(fullPath)
-        finally:
+            QMessageBox.information(self, "该平台暂不支持直接打开wps",
+                                    f'文件在{fullPath},请手动打开')
             self.exportExcel.setEnabled(True)
 
     def queryRecordsByParam(self):
