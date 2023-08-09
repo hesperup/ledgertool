@@ -95,6 +95,8 @@ class RecordPage(QWidget):
     def init_data(self):
         # record_list = self.record_model.getRecords()
         # self.tableView.setModel(record_list)
+
+        self.queryRecordsByParam()
         self.init_user()
         self.init_product()
 

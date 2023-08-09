@@ -115,8 +115,8 @@ class BorrowPage(QWidget):
         self.ptypeselect.setCurrentIndex(0)
         self.pidselect.clear()
         self.userselect.setCurrentIndex(0)
-        self.dateEdit_2.clear()
-        self.dateEdit_3.clear()
+        self.dateEdit_2.setDate(QDate.currentDate())
+        self.dateEdit_3.setDate(QDate.currentDate())
         QMessageBox.information(self, "操作成功",
                                 '登记成功')
         self.saveborrow.setEnabled(True)
