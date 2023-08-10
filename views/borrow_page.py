@@ -35,17 +35,17 @@ class BorrowPage(QWidget):
         self.pidselect.setGeometry(QRect(350, 180, 181, 41))
         self.label = QLabel(self)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(240, 110, 58, 18))
+        self.label.setGeometry(QRect(230, 110, 81, 20))
         font = QFont()
         font.setPointSize(14)
         self.label.setFont(font)
         self.label_2 = QLabel(self)
         self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(240, 190, 58, 18))
+        self.label_2.setGeometry(QRect(230, 190, 81, 20))
         self.label_2.setFont(font)
         self.label_3 = QLabel(self)
         self.label_3.setObjectName(u"label_3")
-        self.label_3.setGeometry(QRect(240, 270, 58, 18))
+        self.label_3.setGeometry(QRect(230, 270, 81, 20))
         self.label_3.setFont(font)
         self.userselect = QComboBox(self)
         self.userselect.setObjectName(u"userselect")
@@ -53,25 +53,36 @@ class BorrowPage(QWidget):
         # save
         self.saveborrow = QPushButton(self)
         self.saveborrow.setObjectName(u"saveborrow")
-        self.saveborrow.setGeometry(QRect(590, 480, 91, 31))
+        self.saveborrow.setGeometry(QRect(590, 520, 91, 31))
         self.saveborrow.setFont(font)
         self.saveborrow.clicked.connect(self.save)
 
+        # ke hu 名称
+        self.label_15 = QLabel(self)
+        self.label_15.setObjectName(u"label_15")
+        self.label_15.setGeometry(QRect(230, 340, 81, 20))
+        self.label_15.setFont(font)
+
+        self.customer = QLineEdit(self)
+        self.customer.setObjectName(u"customer")
+        self.customer.setGeometry(QRect(350, 330, 181, 41))
+
         self.label_13 = QLabel(self)
         self.label_13.setObjectName(u"label_13")
-        self.label_13.setGeometry(QRect(230, 360, 81, 20))
+        self.label_13.setGeometry(QRect(230, 410, 81, 20))
         self.label_13.setFont(font)
         self.label_14 = QLabel(self)
         self.label_14.setObjectName(u"label_14")
-        self.label_14.setGeometry(QRect(230, 440, 81, 18))
+        self.label_14.setGeometry(QRect(230, 490, 81, 20))
         self.label_14.setFont(font)
+
         self.dateEdit_2 = QDateEdit(QDate.currentDate(), self)
         self.dateEdit_2.setObjectName(u"dateEdit_2")
-        self.dateEdit_2.setGeometry(QRect(350, 350, 181, 41))
+        self.dateEdit_2.setGeometry(QRect(350, 400, 181, 41))
         self.dateEdit_2.setCalendarPopup(True)
         self.dateEdit_3 = QDateEdit(QDate.currentDate(), self)
         self.dateEdit_3.setObjectName(u"dateEdit_3")
-        self.dateEdit_3.setGeometry(QRect(350, 440, 181, 41))
+        self.dateEdit_3.setGeometry(QRect(350, 470, 181, 41))
         self.dateEdit_3.setCalendarPopup(True)
 
     def init_data(self):
@@ -85,6 +96,7 @@ class BorrowPage(QWidget):
         # 校验数据
         id = self.pidselect.currentText()
         name = self.userselect.currentText()
+        customer = self.customer.text()
         start = self.dateEdit_2.text()
         end = self.dateEdit_3.text()
         if not id:
@@ -110,7 +122,7 @@ class BorrowPage(QWidget):
             return
         # 记录借用
         user_id = self.user_model.queryIdByName(name)
-        self.record_model.saveBorrow(id, user_id, start, end)
+        self.record_model.saveBorrow(id, user_id, start, end, customer)
         # 解除按钮
         self.ptypeselect.setCurrentIndex(0)
         self.pidselect.clear()

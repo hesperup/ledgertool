@@ -10,7 +10,7 @@ QUERY_BORROWFLAG_SQL = """SELECT t.id FROM record t where t.product_id = :pid an
 OR  date(:end) BETWEEN date(t.start_date) and date(t.end_date))"""
 
 INSERT_RECORD_SQL = """
-INSERT INTO "record" ("people", "create_time", "start_date", "end_date", "product_id") VALUES (?, datetime('now','localtime'), ?, ?, ?);
+INSERT INTO "record" ("people", "create_time", "start_date", "end_date", "product_id","customer") VALUES (?, datetime('now','localtime'), ?, ?, ?,?);
 """
 
 DEL_BY_ID_SQL = "delete FROM record where id = :id"
@@ -23,7 +23,7 @@ class RecordModel:
         return recordModel
 
     def getRecordsByQuery(self, user_name, prodt_name, query_date):
-        QUERY_RECORD_BYPARAM_SQL = """SELECT t.id 编号,m.name 人员,t.product_id as 管理编号,p.name as 仪器,p.fac_id 厂家编号 ,t.create_time 创建时间,t.start_date 借用开始日期,t.end_date 借用结束日期 
+        QUERY_RECORD_BYPARAM_SQL = """SELECT m.name 人员,t.product_id as 管理编号,p.name as 仪器,p.fac_id 厂家编号,t.customer 客户名称 ,t.create_time 创建时间,t.start_date 借用开始日期,t.end_date 借用结束日期 
                                     FROM record t 
                                     LEFT JOIN user m on m.id=t.people 
                                     LEFT JOIN product p on p.id=t.product_id
@@ -48,7 +48,7 @@ class RecordModel:
 
     def getRecordList(self, user_name, prodt_name, query_date):
         q = QSqlQuery(DBUtil.db)
-        QUERY_RECORD_BYPARAM_SQL = """SELECT t.create_time 创建时间,m.name 人员,p.name as 仪器,t.product_id as 管理编号,p.fac_id 厂家编号 ,t.start_date 借用开始日期,t.end_date 借用结束日期 
+        QUERY_RECORD_BYPARAM_SQL = """SELECT t.create_time 创建时间,m.name 人员,p.name as 仪器,t.product_id as 管理编号,p.fac_id 厂家编号 ,t.customer 客户名称,t.start_date 借用开始日期,t.end_date 借用结束日期 
                                     FROM record t 
                                     LEFT JOIN user m on m.id=t.people 
                                     LEFT JOIN product p on p.id=t.product_id
@@ -71,10 +71,10 @@ class RecordModel:
             q.bindValue(":end_date", query_date)
         q.exec()
         record_list = [('登记时间', '人员', '仪器', '管理编号',
-                        '厂家编号', '借用开始日期', '借用结束日期')]
+                        '厂家编号', '客户名称', '借用开始日期', '借用结束日期')]
         while q.next():
             record = (q.value(0), q.value(1), q.value(2), q.value(
-                3), q.value(4), q.value(5), q.value(6))
+                3), q.value(4), q.value(5), q.value(6), q.value(7))
             record_list.append(record)
         return record_list
 
@@ -87,12 +87,13 @@ class RecordModel:
         q.exec()
         return q.next()
 
-    def saveBorrow(self, pid, people, start, end):
+    def saveBorrow(self, pid, people, start, end, customer):
         q = QSqlQuery(INSERT_RECORD_SQL, DBUtil.db)
         q.addBindValue(people)
         q.addBindValue(start)
         q.addBindValue(end)
         q.addBindValue(pid)
+        q.addBindValue(customer)
         q.exec()
         return q.lastInsertId()
 

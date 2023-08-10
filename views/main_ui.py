@@ -117,17 +117,19 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate(
             "MainWindow", u"\u53f0\u8d26\u5c0f\u5de5\u5177", None))
         self.borrowPage.label.setText(QCoreApplication.translate(
-            "MainWindow", u"\u4eea\u5668", None))
+            "MainWindow", u"\u4eea\u5668\u540d\u79f0", None))
         self.borrowPage.label_2.setText(QCoreApplication.translate(
-            "MainWindow", u"\u7f16\u53f7", None))
+            "MainWindow", u"\u7ba1\u7406\u7f16\u53f7", None))
         self.borrowPage.label_3.setText(QCoreApplication.translate(
-            "MainWindow", u"\u4eba\u5458", None))
+            "MainWindow", u"\u501f\u7528\u4eba\u5458", None))
         self.borrowPage.saveborrow.setText(QCoreApplication.translate(
             "MainWindow", u"\u767b\u8bb0", None))
         self.borrowPage.label_13.setText(QCoreApplication.translate(
             "MainWindow", u"\u5f00\u59cb\u65e5\u671f", None))
         self.borrowPage.label_14.setText(QCoreApplication.translate(
             "MainWindow", u"\u7ed3\u675f\u65e5\u671f", None))
+        self.borrowPage.label_15.setText(QCoreApplication.translate(
+            "MainWindow", u"\u5ba2\u6237\u540d\u79f0", None))
         self.borrowPage.dateEdit_2.setDisplayFormat(
             QCoreApplication.translate("MainWindow", u"yyyy-MM-dd", None))
         self.borrowPage.dateEdit_3.setDisplayFormat(

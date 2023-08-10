@@ -128,8 +128,9 @@ class RecordPage(QWidget):
         ws.column_dimensions['C'].width = 25
         ws.column_dimensions['D'].width = 14
         ws.column_dimensions['E'].width = 14
-        ws.column_dimensions['F'].width = 12
+        ws.column_dimensions['F'].width = 14
         ws.column_dimensions['G'].width = 12
+        ws.column_dimensions['H'].width = 12
         ts = calendar.timegm(time.gmtime())
 
         filename = str(ts)+".xlsx"
@@ -141,10 +142,13 @@ class RecordPage(QWidget):
         if sys == "Windows":
             from win32com import client
             try:
-                et = client.DispatchEx("ket.Application")
+                try:
+                    et = client.DispatchEx("ket.Application")
+                except Exception as e:
+                    et = client.DispatchEx("et.Application")
             except Exception as e:
                 QMessageBox.information(self, "excel打开失败",
-                                        f'{e},文件在{fullPath}')
+                                        f'{e},文件在{fullPath},请手动打开')
             else:
                 # 0或者False都可以
                 et.Visible = 1  # 显示
