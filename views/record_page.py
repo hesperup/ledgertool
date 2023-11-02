@@ -157,9 +157,31 @@ class RecordPage(QWidget):
             finally:
                 self.exportExcel.setEnabled(True)
         else:
-            QMessageBox.information(self, "该平台暂不支持直接打开wps",
-                                    f'文件在{fullPath},请手动打开')
-            self.exportExcel.setEnabled(True)
+
+            from pywpsrpc.rpcetapi import (createEtRpcInstance, etapi)
+            '''open excel '''
+            # 这里仅创建RPC实例
+            try:
+                hr_excel, rpc_excel = createEtRpcInstance()
+                # 注意：
+                # WPS开发接口的返回值第一个总是HRESULT（无返回值的除外）
+                # 通常不为0的都认为是调用失败（0 == common.S_OK）
+                # 可以使用common模块里的FAILED或者SUCCEEDED去判断
+
+                # 通过rpc实例调起WPS进程
+                hr_excel, app_excel = rpc_excel.getEtApplication()
+
+                workbooks = app_excel.Workbooks
+
+                # 打开指定表格文件
+                workbooks.Open(fullPath)
+                # QMessageBox.information(self, "该平台暂不支持直接打开wps",
+                #                         f'文件在{fullPath},请手动打开')
+            except Exception as e:
+                QMessageBox.information(self, "excel打开失败",
+                                        f'{e},文件在{fullPath},请手动打开')
+            finally:
+                self.exportExcel.setEnabled(True)
 
     def queryRecordsByParam(self):
         query_date = self.dateEdit.text()
